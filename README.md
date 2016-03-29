@@ -5,13 +5,27 @@ I created this Vagrant box for the following reasons:
 * development of Python and PHP, with MySQL
 * vanilla Ubuntu
 * project agnostic (install project dependencies with pip, composer, bower, ...)
-* no dependencies on e.g. Puppet
+* no dependencies on a provioner like Docker, Puppet, Ansible, ...
 * completely unattended provisioning
 * Keep It Small & Simple
 
-All configuration is done through variables in `vagrant/provision.sh`. This is where you will find database names, passwords, etc. as well.
+## Prerequisites
 
-This box uses `ubuntu/wily64` and additionally contains:
+All you need to get started is:
+
+* [VirtualBox](https://www.virtualbox.org/)
+* [Vagrant](https://www.vagrantup.com/)
+
+Then:
+
+    git clone https://github.com/otech-nl/vagrant-lemp.git
+    vagrant up
+
+Wait until vagrant finishes and then open [http://192.168.33.10](http://192.168.33.10) or type `vagrant ssh`.
+
+## Contents
+
+This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and additionally contains:
 
 * nginx
 * mysql
@@ -21,11 +35,13 @@ This box uses `ubuntu/wily64` and additionally contains:
 
 ## Details
 
+* All configuration is done through variables in `vagrant/provision.sh`. This is where you will find database names, passwords, etc. as well.
 * your current directory is mapped to `/home/vagrant/public_html`
 * [http://192.168.33.10](http://192.168.33.10) opens the default nginx page
-* [http://192.168.33.10/~vagrant](http://192.168.33.10/~vagrant) opens yout home page
+* [http://192.168.33.10/~vagrant](http://192.168.33.10/~vagrant) opens your home page
 * [http://192.168.33.10/phpmyadmin](http://192.168.33.10/phpmyadmin) opens PhpMyAdmin
 * root password: vagrant
+* MySQL is secured using `mysql_secure_installation`
 
 ## Caveat
 
