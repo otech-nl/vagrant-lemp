@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+# https://github.com/otech-nl/vagrant-lemp
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/wily64"
@@ -20,5 +21,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "file", source: "vagrant/nginx.conf", destination: "/tmp/nginx.conf"
   config.vm.provision "file", source: "vagrant/mysql_secure.sh", destination: "/tmp/mysql_secure.sh"
+  config.vm.provision "file", source: "vagrant/bash_prompt.sh", destination: "/tmp/bash_prompt.sh"
   config.vm.provision "shell", path: "vagrant/provision.sh"
 end

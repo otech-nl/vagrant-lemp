@@ -25,14 +25,20 @@ Wait until vagrant finishes and then open [http://192.168.33.10](http://192.168.
 
 ## Contents
 
-This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and additionally contains:
+This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and optionally contains:
 
 * nginx
 * mysql
-* php5-fpm
-* composer
+* php:
+  * php5-fpm
+  * composer
 * phpmyadmin
-* nodejs, npm, bower
+* py:
+  * virtualenv
+* js:
+  * nodejs
+  * npm
+  * bower
 
 ## Details
 

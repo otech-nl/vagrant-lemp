@@ -1,19 +1,24 @@
-export DEBIAN_FRONTEND=noninteractive
+#!/usr/bin/env bash
+###################################################
+# Vagrant provisioning for a basic LEMP Box
+# https://github.com/otech-nl/vagrant-lemp
+###################################################
 
-# Variables
-APPENV=local
+# select the components you want to be installed
+COMPONENTS="mysql php myadmin py js"
+
+# set your database values
 DBHOST=localhost
 DBNAME=vagrant
 DBUSER=vagrant
 DBPASSWD=vagrant
 
-# select the components you want to be installed
-COMPONENTS="mysql php phpmyadmin js"
-
 ###################################################
 # you probably do not want to edit below this line
 ###################################################
 
+export DEBIAN_FRONTEND=noninteractive
+APPENV=local
 INSTALL="apt-get install -y"
 
 report() {
@@ -25,9 +30,12 @@ report() {
 # install packages
 report "Updating package database"
 apt-get update
-report "Updating package nginx"
-$INSTALL nginx
-mv /tmp/nginx.conf /etc/nginx/sites-available/default
+
+if [[ $COMPONENTS =~ "nginx" ]]; then
+    report "Updating package nginx"
+    $INSTALL nginx
+    mv /tmp/nginx.conf /etc/nginx/sites-available/default
+fi
 
 if [[ $COMPONENTS =~ "mysql" ]]; then
     report "Installing MySQL"
@@ -45,7 +53,7 @@ if [[ $COMPONENTS =~ "php" ]]; then
     $INSTALL composer
 fi
 
-if [[ $COMPONENTS =~ "phpmyadmin" ]]; then
+if [[ $COMPONENTS =~ "myadmin" ]]; then
     report "Installing phpMyAdmin"
     echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
     echo "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" | debconf-set-selections
@@ -53,6 +61,11 @@ if [[ $COMPONENTS =~ "phpmyadmin" ]]; then
     echo "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" | debconf-set-selections
     echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" | debconf-set-selections
     $INSTALL -q phpmyadmin
+fi
+
+if [[ $COMPONENTS =~ "py" ]]; then
+    report "Installing Python components"
+    $INSTALL virtualenv
 fi
 
 if [[ $COMPONENTS =~ "js" ]]; then
@@ -64,7 +77,11 @@ fi
 
 # post install actions
 report "Finishing up"
-service nginx restart
+mv /tmp/bash_prompt.sh /home/vagrant/.bash_prompt
+echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
+if [[ $COMPONENTS =~ "nginx" ]]; then
+    service nginx restart
+fi
 if [[ $COMPONENTS =~ "php" ]]; then
     service php5-fpm restart
 fi
