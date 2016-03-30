@@ -7,28 +7,64 @@ DBNAME=vagrant
 DBUSER=vagrant
 DBPASSWD=vagrant
 
-# set configuration values
-echo "mysql-server mysql-server/root_password password $DBPASSWD" | debconf-set-selections
-echo "mysql-server mysql-server/root_password_again password $DBPASSWD" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" | debconf-set-selections
+# select the components you want to be installed
+COMPONENTS="mysql php phpmyadmin js"
+
+###################################################
+# you probably do not want to edit below this line
+###################################################
+
+INSTALL="apt-get install -y"
+
+report() {
+    echo "####################################################"
+    echo $1
+    echo "####################################################"
+}
 
 # install packages
+report "Updating package database"
 apt-get update
-apt-get install -y nginx
-apt-get install -y -q mysql-server
-apt-get install -y php5-fpm
-apt-get install -y composer
-apt-get install -y -q phpmyadmin
+report "Updating package nginx"
+$INSTALL nginx
+mv /tmp/nginx.conf /etc/nginx/sites-available/default
+
+if [[ $COMPONENTS =~ "mysql" ]]; then
+    report "Installing MySQL"
+    echo "mysql-server mysql-server/root_password password $DBPASSWD" | debconf-set-selections
+    echo "mysql-server mysql-server/root_password_again password $DBPASSWD" | debconf-set-selections
+    $INSTALL -q mysql-server
+    . /tmp/mysql_secure.sh $DBPASSWD
+    mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME"
+    mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'"
+fi
+
+if [[ $COMPONENTS =~ "php" ]]; then
+    report "Installing PHP"
+    $INSTALL php5-fpm
+    $INSTALL composer
+fi
+
+if [[ $COMPONENTS =~ "phpmyadmin" ]]; then
+    report "Installing phpMyAdmin"
+    echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" | debconf-set-selections
+    $INSTALL -q phpmyadmin
+fi
+
+if [[ $COMPONENTS =~ "js" ]]; then
+    report "Installing Javascript components"
+    $INSTALL npm
+    npm install bower -g
+    ln -s /usr/bin/nodejs /usr/local/bin/node
+fi
 
 # post install actions
-mv /tmp/nginx.conf /etc/nginx/sites-available/default
-. /tmp/mysql_secure.sh $DBPASSWD
-mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME"
-mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'"
+report "Finishing up"
 service nginx restart
-service php5-fpm restart
-
+if [[ $COMPONENTS =~ "php" ]]; then
+    service php5-fpm restart
+fi
