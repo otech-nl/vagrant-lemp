@@ -5,7 +5,7 @@
 ###################################################
 
 # select the components you want to be installed
-COMPONENTS="mysql php myadmin py js"
+COMPONENTS="nginx mysql php myadmin py js"
 
 # set your database values
 DBHOST=localhost
@@ -19,7 +19,7 @@ DBPASSWD=vagrant
 
 export DEBIAN_FRONTEND=noninteractive
 APPENV=local
-INSTALL="apt-get install -y"
+INSTALL="apt-get install -yq"
 
 report() {
     echo "####################################################"

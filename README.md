@@ -2,7 +2,7 @@
 
 I created this Vagrant box for the following reasons:
 
-* development of Python and PHP, with MySQL
+* development with Python or PHP, and MySQL
 * vanilla Ubuntu
 * project agnostic (install project dependencies with pip, composer, bower, ...)
 * no dependencies on a provisioner like Docker, Puppet, Ansible, ...
@@ -29,16 +29,10 @@ This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and 
 
 * nginx
 * mysql
-* php:
-  * php5-fpm
-  * composer
-* phpmyadmin
-* py:
-  * virtualenv
-* js:
-  * nodejs
-  * npm
-  * bower
+* php (php5-fpm, composer)
+* myadmin (phpmyadmin)
+* py (virtualenv)
+* js (nodejs, npm, bower)
 
 ## Details
 
@@ -46,7 +40,7 @@ This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and 
   * The `COMPONENTS` variable lets you select which components to install.
   * This is where you will find database names, passwords, etc. as well.
 * You can set your VM name and host name in Vagrantfile
-* your current directory is mapped to `/home/vagrant/public_html`
+* Your current directory is mapped to `/home/vagrant/public_html`
 * [http://192.168.33.10](http://192.168.33.10) opens the default nginx page
 * [http://192.168.33.10/~vagrant](http://192.168.33.10/~vagrant) opens your home page
 * [http://192.168.33.10/phpmyadmin](http://192.168.33.10/phpmyadmin) opens PhpMyAdmin
