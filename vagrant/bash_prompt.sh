@@ -52,7 +52,7 @@ function set_git_branch {
   fi
 
   # Set arrow icon based on status against remote.
-  remote_pattern="# Your branch is (.*) of"
+  remote_pattern="# Your branch is (ahead|behind)+ "
   if [[ ${git_status} =~ ${remote_pattern} ]]; then
     if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
       remote="↑"
@@ -68,10 +68,7 @@ function set_git_branch {
   fi
 
   # Get the name of the branch.
-  branch_pattern="^# On branch ([^${IFS}]*)"
-  if [[ ${git_status} =~ ${branch_pattern} ]]; then
-    branch=${BASH_REMATCH[1]}
-  fi
+  branch="$(git rev-parse --abbrev-ref HEAD)"
 
   # Set the final branch string.
   BRANCH="${state}(${branch})${remote}${COLOR_NONE} "
