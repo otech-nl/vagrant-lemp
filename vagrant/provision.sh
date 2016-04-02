@@ -5,13 +5,14 @@
 ###################################################
 
 # select the components you want to be installed
-COMPONENTS="nginx mysql php myadmin py js"
+COMPONENTS="nginx mysql php myadmin py js cc"
 
 # set your database values
 DBHOST=localhost
 DBNAME=vagrant
 DBUSER=vagrant
 DBPASSWD=vagrant
+TIMEZONE=Europe/Amsterdam
 
 ###################################################
 # you probably do not want to edit below this line
@@ -49,8 +50,7 @@ fi
 
 if [[ $COMPONENTS =~ "php" ]]; then
     report "Installing PHP"
-    $INSTALL php5-fpm
-    $INSTALL composer
+    $INSTALL php5-fpm composer
 fi
 
 if [[ $COMPONENTS =~ "myadmin" ]]; then
@@ -68,6 +68,11 @@ if [[ $COMPONENTS =~ "py" ]]; then
     $INSTALL virtualenv
 fi
 
+if [[ $COMPONENTS =~ "cc" ]]; then
+    report "Installing C components"
+    $INSTALL valgrind libglib2.0-dev
+fi
+
 if [[ $COMPONENTS =~ "js" ]]; then
     report "Installing Javascript components"
     $INSTALL npm
@@ -78,6 +83,7 @@ fi
 # post install actions
 report "Finishing up"
 mv /tmp/bash_prompt.sh /home/vagrant/.bash_prompt
+echo $TIMEZONE > /etc/timezone
 echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
 if [[ $COMPONENTS =~ "nginx" ]]; then
     service nginx restart

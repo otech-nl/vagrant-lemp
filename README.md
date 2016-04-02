@@ -33,6 +33,7 @@ This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and 
 * myadmin (phpmyadmin)
 * py (virtualenv)
 * js (nodejs, npm, bower)
+* cc (valgrind, glib)
 
 ## Details
 
