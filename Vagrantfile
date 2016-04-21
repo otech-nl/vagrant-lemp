@@ -2,11 +2,11 @@
 # vi: set ft=ruby :
 # https://github.com/otech-nl/vagrant-lemp
 
-hostname = "bhosted"
+vmname = "lemp"
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/wily64"
-  config.vm.hostname = hostname
+  config.vm.hostname = vmname
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/home/vagrant/public_html"
 
   config.vm.provider "virtualbox" do |v|
-    v.name = hostname
+    v.name = vmname
   end
 
   config.vm.provision "file", source: "vagrant/bash_prompt.sh", destination: "/tmp/bash_prompt.sh"

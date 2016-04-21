@@ -5,7 +5,7 @@
 ###################################################
 
 # select the components you want to be installed
-COMPONENTS="nginx mysql php myadmin py js cc"
+COMPONENTS="nginx mysql php myadmin py2 js cc"
 
 # set your database values
 DBHOST=localhost
@@ -63,7 +63,7 @@ if [[ $COMPONENTS =~ "myadmin" ]]; then
     $INSTALL -q phpmyadmin
 fi
 
-if [[ $COMPONENTS =~ "py" ]]; then
+if [[ $COMPONENTS =~ "py2" ]]; then
     report "Installing Python components"
     $INSTALL virtualenv
 fi
