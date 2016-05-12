@@ -5,7 +5,8 @@
 ###################################################
 
 # select the components you want to be installed
-COMPONENTS="nginx mysql php myadmin py2 js cc"
+COMPONENTS="nginx mysql php myadmin py2 symfony js cc flask"
+COMPONENTS="nginx py2 flask"
 
 # set your database values
 DBHOST=localhost
@@ -33,7 +34,7 @@ report "Updating package database"
 apt-get update
 
 if [[ $COMPONENTS =~ "nginx" ]]; then
-    report "Updating package nginx"
+    report "Installing package nginx"
     $INSTALL nginx
     mv /tmp/nginx.conf /etc/nginx/sites-available/default
 fi
@@ -50,7 +51,7 @@ fi
 
 if [[ $COMPONENTS =~ "php" ]]; then
     report "Installing PHP"
-    $INSTALL php5-fpm composer
+    $INSTALL php-fpm composer
 fi
 
 if [[ $COMPONENTS =~ "myadmin" ]]; then
@@ -63,14 +64,30 @@ if [[ $COMPONENTS =~ "myadmin" ]]; then
     $INSTALL -q phpmyadmin
 fi
 
+if [[ $COMPONENTS =~ "symfony" ]]; then
+    report "Configuring Symfony"
+    curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony
+    chmod a+x /usr/local/bin/symfony
+    mv /tmp/symfony.conf /etc/nginx/sites-enabled
+    $INSTALL php-xml php-intl
+fi
+
 if [[ $COMPONENTS =~ "py2" ]]; then
     report "Installing Python components"
-    $INSTALL virtualenv
+    $INSTALL virtualenv python-pip
+fi
+
+if [[ $COMPONENTS =~ "flask" ]]; then
+    report "Configuring Flask"
+    $INSTALL uwsgi uwsgi-plugin-python
+    mv /tmp/flask.ini /etc/uwsgi/apps-enabled
+    mv /tmp/flask.conf /etc/nginx/sites-enabled
+    service uwsgi restart
 fi
 
 if [[ $COMPONENTS =~ "cc" ]]; then
     report "Installing C components"
-    $INSTALL valgrind libglib2.0-dev
+    $INSTALL valgrind astyle libglib2.0-dev
 fi
 
 if [[ $COMPONENTS =~ "js" ]]; then
@@ -89,5 +106,5 @@ if [[ $COMPONENTS =~ "nginx" ]]; then
     service nginx restart
 fi
 if [[ $COMPONENTS =~ "php" ]]; then
-    service php5-fpm restart
+    service php7.0-fpm restart
 fi

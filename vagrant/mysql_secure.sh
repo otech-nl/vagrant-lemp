@@ -54,7 +54,7 @@ fi
 #
 if [ $(dpkg-query -W -f='${Status}' expect 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     echo "Can't find expect. Trying install it..."
-    aptitude -y install expect
+    apt-get -y install expect
 
 fi
 
