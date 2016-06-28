@@ -6,7 +6,6 @@
 
 # select the components you want to be installed
 COMPONENTS="nginx mysql php myadmin py2 symfony js cc flask"
-COMPONENTS="nginx py2 flask"
 
 # set your database values
 DBHOST=localhost
@@ -22,6 +21,7 @@ TIMEZONE=Europe/Amsterdam
 export DEBIAN_FRONTEND=noninteractive
 APPENV=local
 INSTALL="apt-get install -yq"
+VAGRANT_DIR=/home/vagrant/public_html/vagrant
 
 report() {
     echo "####################################################"
@@ -32,11 +32,13 @@ report() {
 # install packages
 report "Updating package database"
 apt-get update
+$INSTALL cloc
 
 if [[ $COMPONENTS =~ "nginx" ]]; then
     report "Installing package nginx"
     $INSTALL nginx
-    mv /tmp/nginx.conf /etc/nginx/sites-available/default
+    rm /etc/nginx/sites-available/default
+    ln -s $VAGRANT_DIR/nginx.conf /etc/nginx/sites-available/default
 fi
 
 if [[ $COMPONENTS =~ "mysql" ]]; then
@@ -44,14 +46,14 @@ if [[ $COMPONENTS =~ "mysql" ]]; then
     echo "mysql-server mysql-server/root_password password $DBPASSWD" | debconf-set-selections
     echo "mysql-server mysql-server/root_password_again password $DBPASSWD" | debconf-set-selections
     $INSTALL -q mysql-server
-    . /tmp/mysql_secure.sh $DBPASSWD
+    . $VAGRANT_DIR/mysql_secure.sh $DBPASSWD
     mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME"
     mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'"
 fi
 
 if [[ $COMPONENTS =~ "php" ]]; then
     report "Installing PHP"
-    $INSTALL php-fpm composer
+    $INSTALL php5-fpm composer
 fi
 
 if [[ $COMPONENTS =~ "myadmin" ]]; then
@@ -68,20 +70,25 @@ if [[ $COMPONENTS =~ "symfony" ]]; then
     report "Configuring Symfony"
     curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony
     chmod a+x /usr/local/bin/symfony
-    mv /tmp/symfony.conf /etc/nginx/sites-enabled
+    ln -s $VAGRANT_DIR/symfony.conf /etc/nginx/sites-enabled
     $INSTALL php-xml php-intl
 fi
 
 if [[ $COMPONENTS =~ "py2" ]]; then
     report "Installing Python components"
-    $INSTALL virtualenv python-pip
+    $INSTALL virtualenv python-pip python-dev
+    if [[ $COMPONENTS =~ "mysql" ]]; then
+        $INSTALL libmysqlclient-dev
+    fi
 fi
 
 if [[ $COMPONENTS =~ "flask" ]]; then
     report "Configuring Flask"
     $INSTALL uwsgi uwsgi-plugin-python
-    mv /tmp/flask.ini /etc/uwsgi/apps-enabled
-    mv /tmp/flask.conf /etc/nginx/sites-enabled
+    ln -s $VAGRANT_DIR/flask.ini /etc/uwsgi/apps-enabled
+    ln -s $VAGRANT_DIR/uwsgi.conf /etc/nginx/sites-enabled
+    mkdir /var/www/.python-eggs
+    chown www-data:www-data /var/www/.python-eggs/
     service uwsgi restart
 fi
 
@@ -99,12 +106,14 @@ fi
 
 # post install actions
 report "Finishing up"
-mv /tmp/bash_prompt.sh /home/vagrant/.bash_prompt
+ln -s $VAGRANT_DIR/bash_prompt.sh /home/vagrant/.bash_prompt
 echo $TIMEZONE > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
 echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
+echo ". venv/bin/activate" >>/home/vagrant/.bashrc
 if [[ $COMPONENTS =~ "nginx" ]]; then
     service nginx restart
 fi
 if [[ $COMPONENTS =~ "php" ]]; then
-    service php7.0-fpm restart
+    service php5-fpm restart
 fi
