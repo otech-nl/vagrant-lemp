@@ -17,5 +17,5 @@ Vagrant.configure(2) do |config|
     v.name = vmname
     # v.memory = 1024
   end
-  config.vm.provision "shell", path: "vagrant/provision.sh"
+  config.vm.provision "shell", path: "vagrant/provision.sh", args: vmname
 end

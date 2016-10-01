@@ -37,10 +37,8 @@ This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and 
 
 ## Details
 
-* All configuration is done through variables in `vagrant/provision.sh`.
-  * The `COMPONENTS` variable lets you select which components to install.
-  * This is where you will find database names, passwords, etc. as well.
-* You can set your VM name and host name in Vagrantfile
+* You can enable components by copying their files from vagrant/available to vagrant/enabled
+* You can set your VM name and host name in Vagrantfile. This name is also used as your project name.
 * Your current directory is mapped to `/home/vagrant/public_html`
 * [http://192.168.33.10](http://192.168.33.10) opens the default nginx page
 * [http://192.168.33.10/~vagrant](http://192.168.33.10/~vagrant) opens your home page
