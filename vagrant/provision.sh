@@ -33,6 +33,7 @@ report() {
 report "Provisioning $PROJECT"
 report "Updating package database"
 apt-get update
+apt-get autoremove
 
 for SCRIPT in $VAGRANT_DIR/enabled/*
 do
@@ -47,7 +48,11 @@ done
 # post install actions
 report "Finishing up"
 $INSTALL cloc
-ln -s $CFG_DIR/bash_prompt.sh /home/vagrant/.bash_prompt
+PROMPT=/home/vagrant/.bash_prompt
+if [ ! -h $PROMPT ]
+then
+    ln -s $CFG_DIR/bash_prompt.sh $PROMPT
+    echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
+fi
 echo $TIMEZONE > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
-echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
