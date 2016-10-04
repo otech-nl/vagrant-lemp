@@ -6,8 +6,8 @@ vmname = "lemp"
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/wily64"
-  # the official box doesn't work
   # config.vm.box = "ubuntu/xenial64"
+  # config.vm.box = "ubuntu/yakkety64"
   # config.vm.box = "gbarbieru/xenial"
   config.vm.hostname = vmname
   config.vm.network "private_network", ip: "192.168.33.10"

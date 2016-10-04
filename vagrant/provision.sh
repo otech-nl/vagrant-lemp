@@ -40,12 +40,12 @@ do
     if [ -f $SCRIPT ]
     then
         NAME=`basename $SCRIPT .sh`
-        report "Running $NAME"
-        . $SCRIPT
+        report "Running $NAME installation script"
+        . $SCRIPT $PROJECT
     fi
 done
 
-# post install actions
+# install components
 report "Finishing up"
 $INSTALL cloc
 PROMPT=/home/vagrant/.bash_prompt
@@ -54,5 +54,7 @@ then
     ln -s $CFG_DIR/bash_prompt.sh $PROMPT
     echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
 fi
+
+# set timezone
 echo $TIMEZONE > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
