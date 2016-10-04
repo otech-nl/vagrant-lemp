@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 # https://github.com/otech-nl/vagrant-lemp
 
-vmname = "lemp"
+vmname = File.basename(Dir.getwd)
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/wily64"

@@ -31,10 +31,12 @@ report() {
 
 # install packages
 report "Provisioning $PROJECT"
+adduser vagrant www-data
 report "Updating package database"
 apt-get update
-apt-get autoremove
+apt-get -y autoremove
 
+RESTART=""
 for SCRIPT in $VAGRANT_DIR/enabled/*
 do
     if [ -f $SCRIPT ]
@@ -45,7 +47,15 @@ do
     fi
 done
 
-# install components
+# restart services as needed
+RESTART=`echo $RESTART | xargs -n1 | sort -u`
+for SERVICE in $RESTART
+do
+    echo "restarting service $SERVICE"
+    service $SERVICE restart
+done
+
+# final tweaks
 report "Finishing up"
 $INSTALL cloc
 PROMPT=/home/vagrant/.bash_prompt
