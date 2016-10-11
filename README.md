@@ -50,3 +50,14 @@ This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and 
 * root password: vagrant
 * MySQL is secured using `mysql_secure_installation`
 
+## Customize provisioning
+
+The provisioning script will execute any script in the `Vagrant/enabled` folder. These scripts inherit the name space of the provisioning script. In particular, the following variables are available:
+
+* $INSTALL: the apt-get installation command
+* $PROJECT: the project name
+* $DBNAME: the name of the database
+* $DBUSER: the name of the database user
+* $DBPASS: the password of the database user
+
+Finally, the provisioning script executes `Vagrant/setup.sh` as user `vagrant`. Example setup scripts are included in `Vagrant/scripts`.

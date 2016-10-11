@@ -7,9 +7,9 @@ ln -s /usr/share/wordpress /var/www/html
 chmod u=rwX,g=srX,o=rX -R /var/www
 
 gzip -d /usr/share/doc/wordpress/examples/setup-mysql.gz
-bash /usr/share/doc/wordpress/examples/setup-mysql -n $1 $1.dev
+bash /usr/share/doc/wordpress/examples/setup-mysql -n $PROJECT $PROJECT.dev
 
-LOCAL_DIR=/srv/www/wp-content/$1.dev
+LOCAL_DIR=/srv/www/wp-content/$PROJECT.dev
 mkdir $LOCAL_DIR/upgrade
 for DIR in /usr/share/wordpress /var/lib/wordpress $LOCAL_DIR
 do

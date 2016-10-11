@@ -1,0 +1,1 @@
+# this script will be run as user 'vagrant' at the end of provisioning
