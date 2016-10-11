@@ -55,16 +55,25 @@ do
     service $SERVICE restart
 done
 
-# final tweaks
-report "Finishing up"
-$INSTALL cloc
+report "Applying user setup"
 PROMPT=/home/vagrant/.bash_prompt
 if [ ! -h $PROMPT ]
 then
     ln -s $CFG_DIR/bash_prompt.sh $PROMPT
     echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
 fi
+SETUP=public_html/vagrant/setup.sh
+if [ ! -e $SETUP ]
+then
+    echo "Running $SETUP"
+    sudo -u vagrant bash $SETUP
+fi
+
+# final tweaks
+report "Finishing up"
+$INSTALL cloc
 
 # set timezone
 echo $TIMEZONE > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata
+
