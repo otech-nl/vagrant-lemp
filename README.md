@@ -38,25 +38,15 @@ This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and 
 ## Details
 
 * You can enable components by copying their files from vagrant/available to vagrant/enabled
-* You can set your VM name and host name in Vagrantfile. This name is also used as your project name.
+* You can set your VM name and host name in Vagrantfile. This name is also used as your project name. By default the name is derived from your directory name.
 * Your current directory is mapped to `/home/vagrant/public_html`
-* [http://192.168.33.10](http://192.168.33.10) opens the default nginx page
-* [http://192.168.33.10/~vagrant](http://192.168.33.10/~vagrant) opens your home page
-* [http://192.168.33.10/phpmyadmin](http://192.168.33.10/phpmyadmin) opens PhpMyAdmin
+* The script optionally uses the [HostsUpdater](https://github.com/cogitatio/vagrant-hostsupdater) plugin to set hostnames vagrant.dev and _<projectname>_.dev. Otherwise add the following line to your `C:\Windows\System32\drivers\etc\hosts` or `/etc/hosts` (depending on your host OS) to be able to use [vagrant.dev](http://vagrant.dev) as URL:
+
+        192.168.33.10	vagrant.dev
+* Useful pages:
+   * [http://192.168.33.10](http://192.168.33.10) opens the default nginx page
+   * [http://192.168.33.10/~vagrant](http://192.168.33.10/~vagrant) opens your home page
+   * [http://192.168.33.10/phpmyadmin](http://192.168.33.10/phpmyadmin) opens PhpMyAdmin
 * root password: vagrant
 * MySQL is secured using `mysql_secure_installation`
 
-## Caveat
-
-The following error message is harmless and can be ignored:
-
-    ==> default: mesg:
-    ==> default: ttyname failed
-    ==> default: :
-    ==> default: Inappropriate ioctl for device
-
-## Tip
-
-Add the following line to your `C:\Windows\System32\drivers\etc\hosts` or `/etc/hosts` (depending on your host OS) to be able to use [vagrant.dev](http://vagrant.dev) as URL:
-
-    192.168.33.10	vagrant.dev
