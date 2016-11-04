@@ -3,11 +3,12 @@
 # https://github.com/otech-nl/vagrant-lemp
 
 vmname = File.basename(Dir.getwd)
+username = "ubuntu"  # "vagrant" for older versions of ubuntu
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/wily64"
+  # config.vm.box = "ubuntu/wily64"
   # config.vm.box = "ubuntu/xenial64"
-  # config.vm.box = "ubuntu/yakkety64"
+  config.vm.box = "ubuntu/yakkety64"
   # config.vm.box = "gbarbieru/xenial"
   config.vm.hostname = vmname
   config.vm.network "private_network", ip: "192.168.33.10"
@@ -15,7 +16,7 @@ Vagrant.configure(2) do |config|
     config.hostsupdater.aliases = ["vagrant.dev", vmname+".dev"]
     config.hostsupdater.remove_on_suspend = true
   end
-  config.vm.synced_folder ".", "/home/vagrant/public_html"
+  config.vm.synced_folder ".", "/home/"+username+"/public_html"
 
   config.vm.provider "virtualbox" do |v|
     v.name = vmname
@@ -27,5 +28,5 @@ Vagrant.configure(2) do |config|
     s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
   end
 
-  config.vm.provision "shell", path: "vagrant/provision.sh", args: vmname
+  config.vm.provision "shell", path: "vagrant/provision.sh", args: [vmname, username]
 end
