@@ -5,6 +5,7 @@
 ###################################################
 
 PROJECT=$1
+USERNAME=$2
 
 # set your database values
 DBHOST=localhost
@@ -20,7 +21,8 @@ TIMEZONE=Europe/Amsterdam
 export DEBIAN_FRONTEND=noninteractive
 APPENV=local
 INSTALL="apt-get install -yq"
-VAGRANT_DIR=/home/vagrant/public_html/vagrant
+HOME_DIR=/home/$USERNAME
+VAGRANT_DIR=$HOME_DIR/public_html/vagrant
 CFG_DIR=$VAGRANT_DIR/cfg
 
 report() {
@@ -31,7 +33,7 @@ report() {
 
 # install packages
 report "Provisioning $PROJECT"
-adduser vagrant www-data
+adduser $USERNAME www-data
 report "Updating package database"
 apt-get update
 apt-get -y autoremove
@@ -56,17 +58,17 @@ do
 done
 
 report "Applying user setup"
-PROMPT=/home/vagrant/.bash_prompt
+PROMPT=$HOME_DIR/.bash_prompt
 if [ ! -h $PROMPT ]
 then
     ln -s $CFG_DIR/bash_prompt.sh $PROMPT
-    echo ". ~/.bash_prompt" >>/home/vagrant/.bashrc
+    echo ". ~/.bash_prompt" >>$HOME_DIR/.bashrc
 fi
-SETUP=public_html/vagrant/setup.sh
+SETUP=$HOME_DIR/setup.sh
 if [ ! -e $SETUP ]
 then
     echo "Running $SETUP"
-    sudo -u vagrant bash $SETUP
+    sudo -u $USERNAME bash $SETUP
 fi
 
 # final tweaks
