@@ -60,4 +60,6 @@ The provisioning script will execute any script in the `Vagrant/enabled` folder.
 * $DBUSER: the name of the database user
 * $DBPASS: the password of the database user
 
-Finally, the provisioning script executes `Vagrant/setup.sh` as user `vagrant`. Example setup scripts are included in `Vagrant/scripts`.
+Finally, the provisioning script executes `Vagrant/setup.sh` as user `vagrant`.
+
+Example setup scripts are included in `Vagrant/scripts`. You can you these to create youw own setup scripts.
