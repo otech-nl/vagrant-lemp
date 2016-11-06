@@ -39,7 +39,7 @@ apt-get update
 apt-get -y autoremove
 
 RESTART=""
-for SCRIPT in $VAGRANT_DIR/enabled/*
+for SCRIPT in $VAGRANT_DIR/enabled/*.sh
 do
     if [ -f $SCRIPT ]
     then
@@ -64,7 +64,7 @@ then
     ln -s $CFG_DIR/bash_prompt.sh $PROMPT
     echo ". ~/.bash_prompt" >>$HOME_DIR/.bashrc
 fi
-SETUP=$HOME_DIR/setup.sh
+SETUP=$VAGRANT_DIR/setup.sh
 if [ ! -e $SETUP ]
 then
     echo "Running $SETUP"
