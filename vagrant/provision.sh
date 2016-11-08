@@ -10,7 +10,7 @@ USERNAME=$2
 # set your database values
 DBHOST=localhost
 DBNAME=$PROJECT
-DBUSER=vagrant
+DBUSER=$USERNAME
 DBPASSWD=vagrant
 TIMEZONE=Europe/Amsterdam
 
@@ -33,7 +33,6 @@ report() {
 
 # install packages
 report "Provisioning $PROJECT"
-adduser $USERNAME www-data
 report "Updating package database"
 apt-get update
 apt-get -y autoremove
@@ -70,12 +69,4 @@ then
     echo "Running $SETUP"
     sudo -u $USERNAME bash $SETUP
 fi
-
-# final tweaks
-report "Finishing up"
-$INSTALL cloc
-
-# set timezone
-echo $TIMEZONE > /etc/timezone
-dpkg-reconfigure -f noninteractive tzdata
 

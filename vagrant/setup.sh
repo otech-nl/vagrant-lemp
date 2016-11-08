@@ -1,1 +1,1 @@
-# this script will be run as user 'vagrant' at the end of provisioning
+# this script will be run as common user (like 'ubuntu' or 'vagrant', NOT root) at the end of provisioning
