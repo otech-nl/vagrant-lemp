@@ -33,6 +33,7 @@ report() {
 
 # install packages
 report "Provisioning $PROJECT"
+adduser $USERNAME www-data
 report "Updating package database"
 apt-get update
 apt-get -y autoremove
@@ -44,7 +45,7 @@ do
     then
         NAME=`basename $SCRIPT .sh`
         report "Running $NAME installation script"
-        . $SCRIPT $PROJECT
+        . $SCRIPT
     fi
 done
 
@@ -70,3 +71,10 @@ then
     sudo -u $USERNAME bash $SETUP
 fi
 
+# final tweaks
+report "Finishing up"
+$INSTALL cloc
+
+# set timezone
+echo $TIMEZONE > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata

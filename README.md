@@ -37,6 +37,7 @@ This box uses [ubuntu/wily64](https://vagrantcloud.com/ubuntu/boxes/wily64) and 
 
 ## Details
 
+* Select your preferred Ubuntu box bay setting `config.vm.box` in `Vagrantfile`.
 * You can enable components by copying their files from vagrant/available to vagrant/enabled
 * You can set your VM name and host name in Vagrantfile. This name is also used as your project name. By default the name is derived from your directory name.
 * Your current directory is mapped to `/home/vagrant/public_html`
@@ -60,6 +61,6 @@ The provisioning script will execute any script in the `Vagrant/enabled` folder.
 * $DBUSER: the name of the database user
 * $DBPASS: the password of the database user
 
-Finally, the provisioning script executes `Vagrant/setup.sh` as user `vagrant`.
+Finally, the provisioning script executes `vagrant/setup.sh` as user `vagrant`.
 
-Example setup scripts are included in `Vagrant/scripts`. You can you these to create youw own setup scripts.
+Example setup scripts are included in `vagrant/scripts`. You can use these to create your own setup scripts.
