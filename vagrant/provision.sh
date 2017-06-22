@@ -6,7 +6,6 @@
 
 PROJECT=$1
 USERNAME=$2
-BUNDLES="wordpress"
 
 # set your database values
 DBHOST=localhost
@@ -35,6 +34,7 @@ report() {
 
 INSTALLED=""
 require() {
+    local BUNDLE
     for BUNDLE in $*
     do
         SCRIPT="$BUNDLES_DIR/$BUNDLE.sh"
@@ -44,7 +44,7 @@ require() {
             then
                 report "Running $BUNDLE installation script"
                 . $SCRIPT
-                INSTALLED = "$INSTALLED $BUNDLE"
+                INSTALLED="$INSTALLED $BUNDLE"
                 report "$BUNDLE installation script finished"
             fi
         else
@@ -61,7 +61,12 @@ apt-get update
 apt-get -y autoremove
 
 RESTART=""
-require $BUNDLES
+BUNDLE=$VAGRANT_DIR/install.sh
+if [ -f $BUNDLE ]
+then
+    report "Running $BUNDLE"
+    . $BUNDLE
+fi
 
 report "Restarting services as needed"
 RESTART=`echo $RESTART | xargs -n1 | sort -u`

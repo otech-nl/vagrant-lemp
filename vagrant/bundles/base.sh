@@ -1,5 +1,5 @@
 # some provisioning that should probably always run
-$INSTALL cloc git
+$INSTALL cloc git curl
 
 adduser $USERNAME www-data
 
