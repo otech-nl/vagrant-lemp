@@ -3,13 +3,14 @@
 # https://github.com/otech-nl/vagrant-lemp
 
 vmname = File.basename(Dir.getwd)
-username = "vagrant"  # "vagrant" for Ubuntu Wily, 'ubuntu' for newer
+username = "ubuntu"  # "vagrant" for Ubuntu Wily, 'ubuntu' for newer
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/wily64"
-  # config.vm.box = "ubuntu/xenial64"
-  # config.vm.box = "ubuntu/yakkety64"
+  config.vm.box = "ubuntu/zesty64"  # 17.04
+  # config.vm.box = "ubuntu/xenial64"  # 16.04 LTS
   # config.vm.box = "gbarbieru/xenial"
+  # config.vm.box = "ubuntu/yakkety64"  # 16.10
+  # config.vm.box = "ubuntu/wily64"  # 15.10
   config.vm.hostname = vmname
   config.vm.network "private_network", ip: "192.168.33.10"
   if defined?(VagrantPlugins::HostsUpdater)

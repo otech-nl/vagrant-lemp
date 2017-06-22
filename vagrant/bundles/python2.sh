@@ -1,3 +1,4 @@
+require base
 $INSTALL virtualenv python-pip python-dev libmysqlclient-dev
 echo ". venv/bin/activate" >>/home/vagrant/.bashrc
 sudo -u vagrant virtualenv venv

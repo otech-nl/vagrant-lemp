@@ -6,6 +6,7 @@
 
 PROJECT=$1
 USERNAME=$2
+BUNDLES="wordpress"
 
 # set your database values
 DBHOST=localhost
@@ -22,8 +23,9 @@ export DEBIAN_FRONTEND=noninteractive
 APPENV=local
 INSTALL="apt-get install -yq"
 HOME_DIR=/home/$USERNAME
-VAGRANT_DIR=$HOME_DIR/public_html/vagrant
+VAGRANT_DIR=/home/$USERNAME/public_html/vagrant
 CFG_DIR=$VAGRANT_DIR/cfg
+BUNDLES_DIR=$VAGRANT_DIR/bundles
 
 report() {
     echo "####################################################"
@@ -31,25 +33,37 @@ report() {
     echo "####################################################"
 }
 
+INSTALLED=""
+require() {
+    for BUNDLE in $*
+    do
+        SCRIPT="$BUNDLES_DIR/$BUNDLE.sh"
+        if [ -f $SCRIPT ]
+        then
+            if [[ $INSTALLED != *$BUNDLE* ]]
+            then
+                report "Running $BUNDLE installation script"
+                . $SCRIPT
+                INSTALLED = "$INSTALLED $BUNDLE"
+                report "$BUNDLE installation script finished"
+            fi
+        else
+            report "Script $SCRIPT does not exist!!!"
+        fi
+    done
+}
+
+
 # install packages
 report "Provisioning $PROJECT"
-adduser $USERNAME www-data
 report "Updating package database"
 apt-get update
 apt-get -y autoremove
 
 RESTART=""
-for SCRIPT in $VAGRANT_DIR/enabled/*.sh
-do
-    if [ -f $SCRIPT ]
-    then
-        NAME=`basename $SCRIPT .sh`
-        report "Running $NAME installation script"
-        . $SCRIPT
-    fi
-done
+require $BUNDLES
 
-# restart services as needed
+report "Restarting services as needed"
 RESTART=`echo $RESTART | xargs -n1 | sort -u`
 for SERVICE in $RESTART
 do
@@ -65,16 +79,8 @@ then
     echo ". ~/.bash_prompt" >>$HOME_DIR/.bashrc
 fi
 SETUP=$VAGRANT_DIR/setup.sh
-if [ ! -e $SETUP ]
+if [ -f $SETUP ]
 then
     echo "Running $SETUP"
     sudo -u $USERNAME bash $SETUP
 fi
-
-# final tweaks
-report "Finishing up"
-$INSTALL cloc
-
-# set timezone
-echo $TIMEZONE > /etc/timezone
-dpkg-reconfigure -f noninteractive tzdata

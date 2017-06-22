@@ -1,3 +1,4 @@
+require php5 mysql
 # as per https://help.ubuntu.com/community/WordPress
 $INSTALL wordpress mysql-server
 # vsftpd may be needed to install plugins
@@ -19,4 +20,3 @@ do
 done
 
 RESTART="$RESTART apache2"
-
